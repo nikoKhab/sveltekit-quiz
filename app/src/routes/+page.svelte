@@ -1,40 +1,54 @@
 <script lang="ts">
-//importing data prop from ./+load.ts
+import QuestionCard from '../components/QuestionCard.svelte';
 const { data } = $props()
+
 
 //type for the currentQuestion variable
 interface CurrentQuestion{
     id: number;
     question: string;
     description: string;
-    answers: object;
+    answers: Array<string>;
 }
-
 
 //questions array
 let questions: any = data.questions;
 
-//questions array as a string
-let questionsStr:string = $state(JSON.stringify(data))
-
 //question index counter
-let i: number = 0;
+let i: number = $state(0);
 
 //currently displayed question
-let currentQuestion : CurrentQuestion;
+let currentQuestion : CurrentQuestion = $state(questions[i]);
 
 //function to move on to the next question
 function moveOn(){
     i += 1;
     console.log(questions[i]);
     currentQuestion = questions[i];
+    console.log(currentQuestion.question)
+}
+function moveBack(){
+    if(i > 0){
+        i -= 1;
+        currentQuestion = questions[i]
+    }
 }
 </script>
 
 <main>
     <div>
-        <h2>{JSON.stringify(currentQuestion.id)}</h2>
-    </div>
+       <QuestionCard
+       question={currentQuestion.question}
+       description={currentQuestion.description}
+       answers={currentQuestion.answers}
+       i={i}
+       switchQuestion={
+       ()=>{i += 1}}
 
-<button onclick={moveOn}>click me</button>
+       />
+    </div>
+    <br>
+<button onclick={moveBack}>{"<"}</button>
+<button onclick={moveOn}>{">"}</button>
+
 </main>
